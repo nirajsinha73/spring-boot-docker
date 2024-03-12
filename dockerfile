@@ -1,5 +1,20 @@
-FROM maven:3.6.3-jdk-8
-RUN mvn clean install -Dmaven.test.skip=true
-ADD target/demo-docker.jar demo-docker.jar
-EXPOSE 8081
-ENTRYPOINT ["java", "-jar" , "demo-docker.jar"]
+# Use a base image with JDK installed
+FROM openjdk:11
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Maven project file(s) to the container
+COPY pom.xml .
+
+# Download and cache Maven dependencies
+RUN ["mvn", "dependency:go-offline"]
+
+# Copy the entire project to the container
+COPY . .
+
+# Build the Java project using Maven
+RUN ["mvn", "package"]
+
+# Specify the command to run your Java application
+CMD ["java", "-jar", "target/demo-docker.jar"]
