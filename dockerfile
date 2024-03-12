@@ -1,14 +1,11 @@
 # Use a base image with JDK installed
-FROM openjdk:11
+FROM maven:3.6.3-jdk-8
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy the Maven project file(s) to the container
 COPY pom.xml .
-
-# Download and cache Maven dependencies
-RUN ["mvn", "dependency:go-offline"]
 
 # Copy the entire project to the container
 COPY . .
